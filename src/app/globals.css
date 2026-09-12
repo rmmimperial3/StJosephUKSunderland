@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-parchment text-ink font-sans antialiased;
+}
+
+::selection {
+  background: #3f1c28;
+  color: #f6efe2;
+}
+
+:focus-visible {
+  outline: 3px solid #c4a35a;
+  outline-offset: 3px;
+}
+
+.skip-link {
+  @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:bg-gold-light focus:px-4 focus:py-2 focus:font-semibold focus:text-wine-deep;
+}
+
+.nav-link {
+  @apply rounded-sm px-1 py-0.5 text-[0.95rem] tracking-wide text-parchment/90 transition hover:text-gold-light;
+}
+
+.nav-link[aria-current="page"] {
+  @apply text-gold-light underline decoration-gold/80 decoration-1 underline-offset-8;
+}
+
+.prose-parish p {
+  @apply mb-4 max-w-prose text-[1.05rem] leading-7 text-ink-muted;
+}
+
+.prose-parish p:last-child {
+  @apply mb-0;
+}
