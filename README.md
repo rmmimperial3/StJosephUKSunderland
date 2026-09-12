@@ -23,7 +23,7 @@ npm run start    # serve the production build
 npm run lint     # Next.js lint
 ```
 
-There is no database, login, or CMS. After a build you can host the site on any host that runs Next.js (for example Vercel, Netlify, or a small Node server).
+After a build you can host the site on any host that runs a Node Next.js server. Volunteer edits are saved to a JSON file on disk (see [Parish login](#parish-login)). Serverless hosts may not keep that file between deploys.
 
 ## Pages
 
@@ -33,15 +33,39 @@ There is no database, login, or CMS. After a build you can host the site on any 
 - **Find us** — Paxton Terrace, Millfield, with an OpenStreetMap pin on the church
 - **Notices** — placeholders until the parish adds real news
 - **Contact** — published telephone and email
+- **Parish login** (`/admin`) — shared-password editor for volunteers; not in the main nav
 
-## How to edit content
+## Parish login
 
-Most public facts live in one file:
+Volunteers can update the public site from `/admin` without editing source files.
 
-- [`src/content/parish.ts`](src/content/parish.ts) — name, address, telephone, email, clergy, Mass times, school, map pin
+1. Copy [`.env.example`](.env.example) to `.env.local`.
+2. Set a shared password:
+
+   ```bash
+   PARISH_ADMIN_PASSWORD=choose-a-long-shared-password
+   ```
+
+3. Restart `npm run dev` so Next.js picks up the variable.
+4. Open [http://localhost:3000/admin](http://localhost:3000/admin) and sign in.
+5. Edit weekend Mass times, weekday/Confession notes, telephone, email, the homepage welcome blurb, and notices (add, edit, remove, or mark a notice as a placeholder).
+6. Save, then open the public pages. In `npm run dev` the homepage updates on the next load — no rebuild.
+7. Use **Log out**. The session is an httpOnly cookie (about 12 hours).
+
+If `PARISH_ADMIN_PASSWORD` is unset, `/admin` explains that the password must be set and refuses login. There is no public registration and no user accounts — one parish password only.
+
+Never commit `.env.local` or a real password. Saved edits go to `data/parish.json`, which is gitignored. If that file is missing, the site falls back to [`src/content/parish.ts`](src/content/parish.ts) and [`src/content/notices.ts`](src/content/notices.ts).
+
+A tiny **Parish login** link sits in the footer. It is not in the main navigation.
+
+## How to edit content in the source files
+
+The TypeScript files remain the default if nobody has saved from `/admin`:
+
+- [`src/content/parish.ts`](src/content/parish.ts) — name, address, telephone, email, clergy, Mass times, school, map pin, welcome blurb
 - [`src/content/notices.ts`](src/content/notices.ts) — newsletters and notices
 
-Change the wording, save the file, and refresh the site. For a notice that is ready to publish, set `isPlaceholder` to `false` and add a date if you have one.
+Change the wording, save the file, and refresh the site. For a notice that is ready to publish, set `isPlaceholder` to `false` and add a date if you have one — or do the same from `/admin`.
 
 ## What the parish still needs to fill in
 

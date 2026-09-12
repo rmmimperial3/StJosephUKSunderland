@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Source_Sans_3 } from "next/font/google";
-import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
 import { parish } from "@/content/parish";
 import "./globals.css";
 
@@ -40,9 +38,9 @@ export default function RootLayout({
         <a className="skip-link" href="#main">
           Skip to content
         </a>
-        <SiteHeader />
-        <div id="main">{children}</div>
-        <SiteFooter />
+        <div id="main" className="flex min-h-screen flex-col">
+          {children}
+        </div>
       </body>
     </html>
   );

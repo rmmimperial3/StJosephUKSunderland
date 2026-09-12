@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { formatAddressLines, parish } from "@/content/parish";
+import { getLiveContent } from "@/lib/content-store";
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const live = await getLiveContent();
+
   return (
     <footer className="mt-auto border-t border-gold/20 bg-wine-deep text-parchment">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-3">
@@ -29,15 +32,15 @@ export function SiteFooter() {
             Contact
           </h2>
           <p className="mt-3 text-sm leading-6">
-            <a className="underline decoration-gold/60 underline-offset-4" href={parish.phoneHref}>
-              {parish.phone}
+            <a className="underline decoration-gold/60 underline-offset-4" href={live.phoneHref}>
+              {live.phone}
             </a>
             <br />
             <a
               className="underline decoration-gold/60 underline-offset-4"
-              href={`mailto:${parish.email}`}
+              href={`mailto:${live.email}`}
             >
-              {parish.email}
+              {live.email}
             </a>
           </p>
           <p className="mt-4 text-sm">
@@ -55,9 +58,12 @@ export function SiteFooter() {
           <p>
             {parish.partnership}. Clustered with {parish.cluster.join("; ")}.
           </p>
-          <p>
+          <p className="flex gap-4">
             <Link href="/contact" className="underline underline-offset-2">
               Parish contact
+            </Link>
+            <Link href="/admin" className="text-parchment/45 hover:text-parchment/70">
+              Parish login
             </Link>
           </p>
         </div>

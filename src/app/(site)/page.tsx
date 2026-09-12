@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PlaceholderCallout } from "@/components/PlaceholderCallout";
 import { parish } from "@/content/parish";
+import { getLiveContent } from "@/lib/content-store";
 
 const quickLinks = [
   {
@@ -20,7 +21,15 @@ const quickLinks = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const live = await getLiveContent();
+  const sunday = live.massTimes.weekend.find((row) =>
+    row.day.toLowerCase().includes("sunday"),
+  );
+  const saturday = live.massTimes.weekend.find((row) =>
+    row.day.toLowerCase().includes("saturday"),
+  );
+
   return (
     <>
       <section className="relative overflow-hidden bg-wine-deep text-parchment">
@@ -44,9 +53,7 @@ export default function HomePage() {
               </span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-8 text-parchment/85">
-              A parish church in Millfield, Sunderland, dedicated to Saint
-              Joseph. Whether you are local, visiting family, or looking for a
-              church to pray in, you are welcome here.
+              {live.welcomeBlurb}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -70,9 +77,9 @@ export default function HomePage() {
               Weekend Masses published by the {parish.massTimes.sourceLabel}.
             </p>
             <ul className="mt-5 divide-y divide-gold/20">
-              {parish.massTimes.weekend.map((service) => (
+              {live.massTimes.weekend.map((service) => (
                 <li
-                  key={`${service.day}-${service.time}`}
+                  key={`${service.day}-${service.time}-${service.label}`}
                   className="flex items-baseline justify-between gap-4 py-3"
                 >
                   <span>
@@ -145,10 +152,11 @@ export default function HomePage() {
             <h2 className="font-serif text-3xl">Visiting for the first time</h2>
             <div className="prose-parish mt-4">
               <p>
-                Come as you are. Sunday Mass is at 9.30am; the Saturday Vigil
-                is at 5.30pm. If you need a quiet place to sit, or if you are
-                returning to church after some time away, you will find a
-                welcome.
+                Come as you are.
+                {sunday ? ` Sunday Mass is at ${sunday.time}` : ""}
+                {saturday ? `; the Saturday Vigil is at ${saturday.time}` : ""}.
+                If you need a quiet place to sit, or if you are returning to
+                church after some time away, you will find a welcome.
               </p>
               <p>
                 For baptisms, marriages, funerals, or housebound Communion,

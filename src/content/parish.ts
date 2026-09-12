@@ -25,6 +25,8 @@ export const parish = {
     country: "United Kingdom",
     note: "The diocesan directory lists the postcode as SR4 6HP. Street-level maps usually show Paxton Terrace as SR4 6HS.",
   },
+  welcomeBlurb:
+    "A parish church in Millfield, Sunderland, dedicated to Saint Joseph. Whether you are local, visiting family, or looking for a church to pray in, you are welcome here.",
   phone: "0191 534 2346",
   phoneHref: "tel:+441915342346",
   email: "stanne.sunderland@diocesehn.org.uk",
@@ -87,6 +89,18 @@ export const history = {
   reordered: "2006",
   membersClub: "1978–2013",
 };
+
+export function phoneToHref(phone: string): string {
+  const trimmed = phone.trim();
+  const digits = trimmed.replace(/[^\d+]/g, "");
+  if (digits.startsWith("+")) {
+    return `tel:${digits}`;
+  }
+  if (digits.startsWith("0")) {
+    return `tel:+44${digits.slice(1)}`;
+  }
+  return `tel:${digits}`;
+}
 
 export function formatAddressLines(): string[] {
   return [

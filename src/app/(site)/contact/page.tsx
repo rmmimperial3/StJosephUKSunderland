@@ -2,18 +2,21 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
 import { PlaceholderCallout } from "@/components/PlaceholderCallout";
 import { formatAddressLines, parish } from "@/content/parish";
+import { getLiveContent } from "@/lib/content-store";
 
 export const metadata: Metadata = {
   title: "Contact",
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const live = await getLiveContent();
+
   return (
     <>
       <PageHero eyebrow="Get in touch" title="Contact the parish">
         Telephone or email are the published ways to reach the parish cluster.
-        There is no booking or login on this site — write to us, or speak to
-        someone after Mass.
+        There is no booking or public membership login — write to us, or speak
+        to someone after Mass.
       </PageHero>
 
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
@@ -21,16 +24,17 @@ export default function ContactPage() {
           <section className="border border-gold/30 bg-parchment-card p-6 shadow-card">
             <h2 className="font-serif text-2xl text-wine">Telephone</h2>
             <p className="mt-3 text-2xl">
-              <a href={parish.phoneHref}>{parish.phone}</a>
+              <a href={live.phoneHref}>{live.phone}</a>
             </p>
             <p className="mt-3 text-sm text-ink-muted">
-              Published on the diocesan listing for St Joseph&apos;s.
+              Published on the diocesan listing for St Joseph&apos;s, unless
+              the parish has updated it.
             </p>
           </section>
           <section className="border border-gold/30 bg-parchment-card p-6 shadow-card">
             <h2 className="font-serif text-2xl text-wine">Email</h2>
             <p className="mt-3 break-words text-lg">
-              <a href={`mailto:${parish.email}`}>{parish.email}</a>
+              <a href={`mailto:${live.email}`}>{live.email}</a>
             </p>
             <p className="mt-3 text-sm text-ink-muted">{parish.emailNote}</p>
           </section>
@@ -65,7 +69,7 @@ export default function ContactPage() {
             </PlaceholderCallout>
             <form
               className="border border-gold/30 bg-parchment-card p-6"
-              action={`mailto:${parish.email}`}
+              action={`mailto:${live.email}`}
               method="get"
             >
               <h2 className="font-serif text-2xl text-wine">Send a message</h2>

@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
-import { PlaceholderCallout } from "@/components/PlaceholderCallout";
+import { ServiceNote } from "@/components/ServiceNote";
 import { parish } from "@/content/parish";
+import { getLiveContent } from "@/lib/content-store";
 
 export const metadata: Metadata = {
   title: "Mass times",
 };
 
-export default function MassTimesPage() {
+export default async function MassTimesPage() {
+  const live = await getLiveContent();
+
   return (
     <>
       <PageHero eyebrow="Worship" title="Mass and service times">
@@ -16,14 +19,14 @@ export default function MassTimesPage() {
         <a className="underline underline-offset-4" href={parish.massTimes.sourceUrl}>
           {parish.massTimes.sourceLabel}
         </a>
-        . {parish.massTimes.confirmation}
+        , unless the parish has updated them. {parish.massTimes.confirmation}
       </PageHero>
 
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <section className="border border-gold/30 bg-parchment-card p-6 shadow-card sm:p-8">
           <h2 className="font-serif text-3xl text-wine">Weekend Mass</h2>
           <table className="mt-6 w-full text-left">
-            <caption className="sr-only">Published weekend Mass times</caption>
+            <caption className="sr-only">Weekend Mass times</caption>
             <thead>
               <tr className="border-b border-gold/30 text-xs tracking-[0.16em] text-ink-faint uppercase">
                 <th className="py-2 pr-4 font-semibold">Day</th>
@@ -32,8 +35,11 @@ export default function MassTimesPage() {
               </tr>
             </thead>
             <tbody>
-              {parish.massTimes.weekend.map((service) => (
-                <tr key={`${service.day}-${service.time}`} className="border-b border-parchment-deep">
+              {live.massTimes.weekend.map((service) => (
+                <tr
+                  key={`${service.day}-${service.time}-${service.label}`}
+                  className="border-b border-parchment-deep"
+                >
                   <td className="py-4 pr-4 font-semibold">{service.day}</td>
                   <td className="py-4 pr-4 font-serif text-2xl">{service.time}</td>
                   <td className="py-4 text-ink-muted">{service.label}</td>
@@ -42,36 +48,35 @@ export default function MassTimesPage() {
             </tbody>
           </table>
           <p className="mt-5 text-sm text-ink-muted">
-            Source:{" "}
+            Default source:{" "}
             <a className="underline underline-offset-2" href={parish.massTimes.sourceUrl}>
               diocesehn.org.uk
             </a>
-            . The diocesan page does not currently list weekday Masses for this
-            church.
+            . Weekday times are only shown once the parish has added them.
           </p>
         </section>
 
         <div className="mt-8 grid gap-5 md:grid-cols-2">
-          <PlaceholderCallout>
-            <p>
-              <strong>Weekdays.</strong> {parish.massTimes.weekdayPlaceholder}
-            </p>
-          </PlaceholderCallout>
-          <PlaceholderCallout>
-            <p>
-              <strong>Confession.</strong> {parish.massTimes.confessionPlaceholder}
-            </p>
-          </PlaceholderCallout>
-          <PlaceholderCallout>
-            <p>
-              <strong>Holy Days.</strong> {parish.massTimes.holyDayPlaceholder}
-            </p>
-          </PlaceholderCallout>
-          <PlaceholderCallout>
-            <p>
-              <strong>Other sacraments.</strong> {parish.massTimes.otherPlaceholder}
-            </p>
-          </PlaceholderCallout>
+          <ServiceNote
+            title="Weekdays"
+            text={live.massTimes.weekdayPlaceholder}
+            defaultText={parish.massTimes.weekdayPlaceholder}
+          />
+          <ServiceNote
+            title="Confession"
+            text={live.massTimes.confessionPlaceholder}
+            defaultText={parish.massTimes.confessionPlaceholder}
+          />
+          <ServiceNote
+            title="Holy Days"
+            text={live.massTimes.holyDayPlaceholder}
+            defaultText={parish.massTimes.holyDayPlaceholder}
+          />
+          <ServiceNote
+            title="Other sacraments"
+            text={live.massTimes.otherPlaceholder}
+            defaultText={parish.massTimes.otherPlaceholder}
+          />
         </div>
 
         <section className="prose-parish mt-12">
